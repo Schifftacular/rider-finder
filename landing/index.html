@@ -204,29 +204,52 @@
     .step-card p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
 
     /* INSTALL */
-    .install-steps { display: flex; flex-direction: column; gap: 24px; }
+    .install-steps { display: flex; flex-direction: column; gap: 32px; }
     .install-block {}
     .install-block .label {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin-bottom: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
     .install-block .label .step-badge {
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
       background: var(--accent);
       color: #fff;
       border-radius: 50%;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
     }
+
+    .step-desc {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.75;
+      margin-bottom: 12px;
+    }
+    .step-desc strong { color: var(--text); }
+
+    /* CALLOUT BOX */
+    .callout {
+      background: rgba(79,142,247,.07);
+      border: 1px solid rgba(79,142,247,.18);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.75;
+      margin-top: 14px;
+    }
+    .callout strong { color: var(--text); }
+    .callout .inline-code { color: var(--accent2); }
 
     /* CODE BLOCKS */
     .code-wrap {
@@ -286,38 +309,6 @@
       color: var(--accent2);
     }
 
-    /* ARGS TABLE */
-    .table-wrap {
-      overflow-x: auto;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-    th {
-      background: var(--surface);
-      text-align: left;
-      padding: 12px 16px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: .5px;
-      border-bottom: 1px solid var(--border);
-    }
-    td {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: top;
-    }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: var(--surface); }
-    td:first-child code { color: var(--accent2); }
-    td:nth-child(2) code { color: var(--accent); }
-
     /* TIPS */
     .tips-grid {
       display: grid;
@@ -361,21 +352,20 @@
     </a>
     <div class="nav-links">
       <a href="#how-it-works">How it works</a>
-      <a href="#install">Install</a>
-      <a href="#usage">Usage</a>
-      <a href="https://github.com/Schifftacular/rider-finder" target="_blank">GitHub →</a>
+      <a href="#setup">Setup</a>
+      <a href="#usage">Run it</a>
+      <a href="#tips">Tips</a>
     </div>
   </div>
 </nav>
 
 <!-- HERO -->
 <header class="hero">
-  <div class="hero-eyebrow">🎬 AI-Powered Clip Extraction</div>
+  <div class="hero-eyebrow">🎬 For RNS Videomedia</div>
   <h1>Find every jump.<br/>Automatically.</h1>
-  <p>Rider Finder scans raw footage, detects horses with YOLOv8, and cuts individual jump clips — so you can stop scrubbing and start editing.</p>
+  <p>Drop in your raw footage. Rider Finder watches the whole video, finds every horse on screen, and saves each jump as its own ready-to-edit clip.</p>
   <div class="hero-cta">
-    <a href="#install" class="btn btn-primary">Get Started</a>
-    <a href="https://github.com/Schifftacular/rider-finder" class="btn btn-ghost" target="_blank">View on GitHub</a>
+    <a href="#setup" class="btn btn-primary">Get Started</a>
   </div>
 </header>
 
@@ -383,229 +373,175 @@
 <section class="section" id="how-it-works">
   <div class="section-label">Overview</div>
   <h2>How it works</h2>
-  <p class="section-sub">Three steps from raw footage to organized clips — no manual work required.</p>
+  <p class="section-sub">Three steps from raw footage to ready-to-edit clips — no manual scrubbing required.</p>
   <div class="steps">
     <div class="step-card">
       <div class="step-num">1</div>
-      <h3>Detect</h3>
-      <p>YOLOv8 nano scans every few frames of your video, flagging every timestamp where a horse appears on screen.</p>
+      <h3>Watches your video</h3>
+      <p>AI scans through your footage frame by frame, looking for horses on screen.</p>
     </div>
     <div class="step-card">
       <div class="step-num">2</div>
-      <h3>Group</h3>
-      <p>Nearby detections are merged into a single "jump event." A configurable gap threshold separates distinct rides.</p>
+      <h3>Finds the jumps</h3>
+      <p>Each time a horse appears, Rider Finder marks the start and end of that moment.</p>
     </div>
     <div class="step-card">
       <div class="step-num">3</div>
-      <h3>Extract</h3>
-      <p><code>ffmpeg</code> cuts each event into its own clip with buffer padding before and after — no re-encoding, lightning fast.</p>
+      <h3>Saves the clips</h3>
+      <p>Every jump is saved as its own video file — ready to drag straight into your editing software.</p>
     </div>
   </div>
 </section>
 
-<!-- PREREQUISITES -->
-<section class="section">
-  <div class="section-label">Requirements</div>
-  <h2>Prerequisites</h2>
-  <p class="section-sub">You'll need Python 3.9+ and ffmpeg installed before getting started.</p>
-
-  <p style="margin-bottom: 16px; color: var(--text-muted); font-size: 15px;">Install <strong style="color:var(--text)">ffmpeg</strong> for your platform:</p>
-
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
-    <div>
-      <p style="font-size:13px; font-weight:600; color:var(--text-muted); margin-bottom:8px;">macOS (Homebrew)</p>
-      <div class="code-wrap">
-        <div class="code-header">
-          <span class="code-lang">bash</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <pre><span class="cmd">brew install ffmpeg</span></pre>
-      </div>
-    </div>
-    <div>
-      <p style="font-size:13px; font-weight:600; color:var(--text-muted); margin-bottom:8px;">Ubuntu / Debian</p>
-      <div class="code-wrap">
-        <div class="code-header">
-          <span class="code-lang">bash</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <pre><span class="cmd">sudo apt install ffmpeg</span></pre>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- INSTALL -->
-<section class="section" id="install">
-  <div class="section-label">Setup</div>
-  <h2>Installation</h2>
-  <p class="section-sub">Get up and running in under two minutes.</p>
+<!-- ONE-TIME SETUP -->
+<section class="section" id="setup">
+  <div class="section-label">One-Time Setup</div>
+  <h2>Getting set up</h2>
+  <p class="section-sub">You only need to do this once. It takes about 5–10 minutes.</p>
 
   <div class="install-steps">
 
+    <!-- Step 1: Open Terminal -->
     <div class="install-block">
-      <div class="label"><span class="step-badge">1</span> Clone the repository</div>
+      <div class="label"><span class="step-badge">1</span> Open Terminal</div>
+      <p class="step-desc">Terminal is a text window built into every Mac. It lets you run programs by typing short commands. Don't worry — you'll only ever be pasting in the commands shown on this page.</p>
+      <p class="step-desc">To open it: press <strong>⌘ Command + Space</strong> at the same time, type <strong>Terminal</strong>, then press <strong>Enter</strong>.</p>
+      <div class="callout">💡 <strong>What you'll see:</strong> A dark window with some text ending in a <code class="inline-code">%</code> symbol. That symbol means Terminal is ready and waiting for your next command.</div>
+    </div>
+
+    <!-- Step 2: Install Homebrew -->
+    <div class="install-block">
+      <div class="label"><span class="step-badge">2</span> Install Homebrew</div>
+      <p class="step-desc">Homebrew is a free tool that helps install software on a Mac. Click <strong>Copy</strong> on the command below, paste it into Terminal, and press <strong>Enter</strong>.</p>
+      <p class="step-desc">Your Mac will ask for your <strong>password</strong> — this is normal and keeps your computer secure. Type it in and press Enter. You won't see the letters appear as you type, but it's working.</p>
       <div class="code-wrap">
-        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre><span class="cmd">git clone https://github.com/Schifftacular/rider-finder.git</span>
-<span class="cmd">cd rider-finder</span></pre>
+        <div class="code-header"><span class="code-lang">Terminal</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cmd">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</span></pre>
+      </div>
+      <div class="callout">⏳ <strong>This takes a few minutes.</strong> When it's done, you'll see the <code class="inline-code">%</code> symbol again. If Homebrew shows a "Next steps" section at the end, copy and paste those commands too, then press Enter after each one.</div>
+    </div>
+
+    <!-- Step 3: Install Python and ffmpeg -->
+    <div class="install-block">
+      <div class="label"><span class="step-badge">3</span> Install Python and ffmpeg</div>
+      <p class="step-desc">Copy and paste this command into Terminal and press <strong>Enter</strong>. It installs the two tools Rider Finder needs to run.</p>
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">Terminal</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cmd">brew install python ffmpeg</span></pre>
       </div>
     </div>
 
+    <!-- Step 4: Download Rider Finder -->
     <div class="install-block">
-      <div class="label"><span class="step-badge">2</span> Create a virtual environment</div>
-      <div class="code-wrap">
-        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre><span class="cmd">python3 -m venv .venv</span></pre>
+      <div class="label"><span class="step-badge">4</span> Download Rider Finder</div>
+      <p class="step-desc">Click the button below to download the Rider Finder files.</p>
+      <a href="https://github.com/Schifftacular/rider-finder/archive/refs/heads/main.zip" class="btn btn-primary" style="margin-bottom: 16px;">⬇&nbsp; Download Rider Finder</a>
+      <div class="callout">
+        <strong>After downloading, do these three things:</strong><br/><br/>
+        1. Open your <strong>Downloads</strong> folder<br/>
+        2. Double-click <strong>rider-finder-main.zip</strong> to unzip it<br/>
+        3. Drag the <strong>rider-finder-main</strong> folder to your <strong>Desktop</strong>
       </div>
     </div>
 
+    <!-- Step 5: Finish installation -->
     <div class="install-block">
-      <div class="label"><span class="step-badge">3</span> Activate the virtual environment</div>
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-        <div>
-          <p style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">macOS / Linux</p>
-          <div class="code-wrap">
-            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-            <pre><span class="cmd">source .venv/bin/activate</span></pre>
-          </div>
-        </div>
-        <div>
-          <p style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">Windows</p>
-          <div class="code-wrap">
-            <div class="code-header"><span class="code-lang">cmd</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-            <pre><span class="cmd">.venv\Scripts\activate</span></pre>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="install-block">
-      <div class="label"><span class="step-badge">4</span> Install dependencies</div>
+      <div class="label"><span class="step-badge">5</span> Finish the installation</div>
+      <p class="step-desc">Copy and paste this command into Terminal and press <strong>Enter</strong>. It installs the AI that Rider Finder uses to recognise horses in your footage.</p>
       <div class="code-wrap">
-        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre><span class="cmd">pip install -r requirements.txt</span></pre>
+        <div class="code-header"><span class="code-lang">Terminal</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cmd">cd ~/Desktop/rider-finder-main && pip3 install -r requirements.txt</span></pre>
       </div>
-      <p style="margin-top:10px; font-size:13px; color:var(--text-muted);">
-        💡 On first run, Rider Finder will automatically download the YOLOv8 nano model weights (~6 MB). An internet connection is required the first time only.
-      </p>
+      <div class="callout">✅ <strong>You're all set up!</strong> You only ever need to do steps 1–5 once. The next time you use Rider Finder, skip straight to the "Run it" section below.</div>
     </div>
 
   </div>
 </section>
 
-<!-- USAGE -->
+<!-- RUNNING IT -->
 <section class="section" id="usage">
-  <div class="section-label">Usage</div>
+  <div class="section-label">Every Time You Use It</div>
   <h2>Running Rider Finder</h2>
-  <p class="section-sub">Point it at any video file and let it run. Clips appear in a <code class="inline-code">clips/</code> folder automatically.</p>
+  <p class="section-sub">Once you're set up, this is all you need to do each time you have footage to process.</p>
 
   <div class="install-steps">
 
+    <!-- Step 1 -->
     <div class="install-block">
-      <div class="label">Basic — run on any video</div>
+      <div class="label"><span class="step-badge">1</span> Open Terminal</div>
+      <p class="step-desc">Press <strong>⌘ Command + Space</strong>, type <strong>Terminal</strong>, and press <strong>Enter</strong>.</p>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="install-block">
+      <div class="label"><span class="step-badge">2</span> Go to the Rider Finder folder</div>
+      <p class="step-desc">Copy and paste this command into Terminal and press <strong>Enter</strong>. This tells Terminal where to find Rider Finder.</p>
       <div class="code-wrap">
-        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre><span class="cmd">python extract_jump_clips.py <span class="str">path/to/your/video.mp4</span></span></pre>
+        <div class="code-header"><span class="code-lang">Terminal</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cmd">cd ~/Desktop/rider-finder-main</span></pre>
       </div>
     </div>
 
+    <!-- Step 3 -->
     <div class="install-block">
-      <div class="label">Custom output directory</div>
+      <div class="label"><span class="step-badge">3</span> Type the command — but don't press Enter yet</div>
+      <p class="step-desc">Click <strong>Copy</strong> below and paste it into Terminal. Make sure there is a <strong>space</strong> at the very end of the command. <em>Don't press Enter yet</em> — you still need to add your video file.</p>
       <div class="code-wrap">
-        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre><span class="cmd">python extract_jump_clips.py <span class="str">video.mp4</span> <span class="flag">--output_dir</span> <span class="str">./my_clips</span></span></pre>
+        <div class="code-header"><span class="code-lang">Terminal</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cmd">python extract_jump_clips.py </span></pre>
       </div>
     </div>
 
+    <!-- Step 4 -->
     <div class="install-block">
-      <div class="label">Adjust buffer and gap thresholds</div>
-      <div class="code-wrap">
-        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre><span class="cmd">python extract_jump_clips.py <span class="str">video.mp4</span> \
-  <span class="flag">--output_dir</span> <span class="str">./clips</span> \
-  <span class="flag">--buffer</span> 8 \
-  <span class="flag">--gap</span> 20</span></pre>
-      </div>
+      <div class="label"><span class="step-badge">4</span> Drag your video file onto the Terminal window</div>
+      <p class="step-desc">Find your video in Finder and drag it straight onto the Terminal window. The file's location will appear automatically after the command.</p>
+      <div class="callout">🎬 <strong>What it looks like after dragging:</strong><br/><br/><code class="inline-code">python extract_jump_clips.py /Users/yourname/Movies/footage.mp4</code></div>
     </div>
 
-  </div>
-</section>
+    <!-- Step 5 -->
+    <div class="install-block">
+      <div class="label"><span class="step-badge">5</span> Press Enter and wait</div>
+      <p class="step-desc">Press <strong>Enter</strong>. Rider Finder will start working through your video. You'll see progress in Terminal as it goes.</p>
+      <div class="callout">📁 <strong>When it's finished:</strong> Your clips will be in a folder called <code class="inline-code">clips</code>, saved in the same place as your original video. Each clip is named with the jump's start time so they stay in order.</div>
+    </div>
 
-<!-- ARGS TABLE -->
-<section class="section">
-  <div class="section-label">Reference</div>
-  <h2>Arguments</h2>
-  <p class="section-sub" style="margin-bottom: 28px;">All available command-line options.</p>
-
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Argument</th>
-          <th>Default</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><code>video_file</code></td>
-          <td><em style="color:var(--text-muted)">required</em></td>
-          <td>Path to the input video file</td>
-        </tr>
-        <tr>
-          <td><code>--output_dir</code></td>
-          <td><code>&lt;video_dir&gt;/clips/</code></td>
-          <td>Directory to save extracted clips</td>
-        </tr>
-        <tr>
-          <td><code>--buffer</code></td>
-          <td><code>5.0</code></td>
-          <td>Seconds of padding to add before and after each detected jump event</td>
-        </tr>
-        <tr>
-          <td><code>--gap</code></td>
-          <td><code>15.0</code></td>
-          <td>Seconds of no horse detection needed to start a new separate event</td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </section>
 
 <!-- TIPS -->
-<section class="section">
-  <div class="section-label">Tips & Troubleshooting</div>
+<section class="section" id="tips">
+  <div class="section-label">Tips &amp; Troubleshooting</div>
   <h2>Getting the best results</h2>
-  <p class="section-sub" style="margin-bottom: 32px;">Common adjustments for different footage types.</p>
+  <p class="section-sub" style="margin-bottom: 32px;">If something isn't quite right, these small adjustments usually fix it.</p>
 
   <div class="tips-grid">
     <div class="tip-card">
       <div class="tip-icon">🔗</div>
       <h4>Clips getting merged together?</h4>
-      <p>Increase <code class="inline-code">--gap</code> to separate events that are being combined into one clip.</p>
+      <p>Add <code class="inline-code">--gap 20</code> to the end of the command (after your video file) to put more space between separate jumps.</p>
     </div>
     <div class="tip-card">
       <div class="tip-icon">🔍</div>
       <h4>Missing some jumps?</h4>
-      <p>Decrease <code class="inline-code">--gap</code> for more sensitivity, or increase <code class="inline-code">--buffer</code> to capture more footage around each event.</p>
+      <p>Add <code class="inline-code">--gap 5</code> to make Rider Finder treat nearby jumps as separate events.</p>
     </div>
     <div class="tip-card">
       <div class="tip-icon">⚡</div>
       <h4>Clips cut off too early?</h4>
-      <p>Increase <code class="inline-code">--buffer</code> (e.g. <code class="inline-code">--buffer 10</code>) to add more seconds before and after each jump.</p>
+      <p>Add <code class="inline-code">--buffer 10</code> to include more seconds of footage before and after each jump.</p>
     </div>
     <div class="tip-card">
       <div class="tip-icon">📹</div>
-      <h4>Supported formats</h4>
-      <p>Any format supported by ffmpeg: <code class="inline-code">.mp4</code>, <code class="inline-code">.mov</code>, <code class="inline-code">.avi</code>, <code class="inline-code">.mkv</code>, <code class="inline-code">.mts</code>, and more.</p>
+      <h4>Supported video formats</h4>
+      <p>Works with most camera and memory card formats: <code class="inline-code">.mp4</code>, <code class="inline-code">.mov</code>, <code class="inline-code">.avi</code>, <code class="inline-code">.mkv</code>, <code class="inline-code">.mts</code>, and more.</p>
     </div>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <p>Built for <a href="#">RNS Videomedia</a> &nbsp;·&nbsp; <a href="https://github.com/Schifftacular/rider-finder" target="_blank">GitHub</a></p>
+  <p>Built for <a href="#">RNS Videomedia</a> &nbsp;·&nbsp; Internal tool — © RNS Videomedia. All rights reserved.</p>
 </footer>
 
 <script>
