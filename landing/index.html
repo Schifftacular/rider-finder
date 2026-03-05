@@ -354,6 +354,7 @@
       <a href="#how-it-works">How it works</a>
       <a href="#setup">Setup</a>
       <a href="#usage">Run it</a>
+      <a href="#updates">Updates</a>
       <a href="#tips">Tips</a>
     </div>
   </div>
@@ -434,14 +435,12 @@
     <!-- Step 4: Download Rider Finder -->
     <div class="install-block">
       <div class="label"><span class="step-badge">4</span> Download Rider Finder</div>
-      <p class="step-desc">Click the button below to download the Rider Finder files.</p>
-      <a href="https://github.com/Schifftacular/rider-finder/archive/refs/heads/main.zip" class="btn btn-primary" style="margin-bottom: 16px;">⬇&nbsp; Download Rider Finder</a>
-      <div class="callout">
-        <strong>After downloading, do these three things:</strong><br/><br/>
-        1. Open your <strong>Downloads</strong> folder<br/>
-        2. Double-click <strong>rider-finder-main.zip</strong> to unzip it<br/>
-        3. Drag the <strong>rider-finder-main</strong> folder to your <strong>Desktop</strong>
+      <p class="step-desc">Copy and paste this command into Terminal and press <strong>Enter</strong>. It downloads Rider Finder straight to your Desktop — no unzipping needed.</p>
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">Terminal</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cmd">git clone https://github.com/Schifftacular/rider-finder.git ~/Desktop/rider-finder</span></pre>
       </div>
+      <div class="callout">✅ <strong>When it's done</strong>, you'll see a folder called <code class="inline-code">rider-finder</code> appear on your Desktop. That's it — no need to move anything.</div>
     </div>
 
     <!-- Step 5: Finish installation -->
@@ -450,7 +449,7 @@
       <p class="step-desc">Copy and paste this command into Terminal and press <strong>Enter</strong>. It installs the AI that Rider Finder uses to recognise horses in your footage.</p>
       <div class="code-wrap">
         <div class="code-header"><span class="code-lang">Terminal</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre><span class="cmd">cd ~/Desktop/rider-finder-main && pip3 install -r requirements.txt</span></pre>
+        <pre><span class="cmd">cd ~/Desktop/rider-finder && pip3 install -r requirements.txt</span></pre>
       </div>
       <div class="callout">✅ <strong>You're all set up!</strong> You only ever need to do steps 1–5 once. The next time you use Rider Finder, skip straight to the "Run it" section below.</div>
     </div>
@@ -478,7 +477,7 @@
       <p class="step-desc">Copy and paste this command into Terminal and press <strong>Enter</strong>. This tells Terminal where to find Rider Finder.</p>
       <div class="code-wrap">
         <div class="code-header"><span class="code-lang">Terminal</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-        <pre><span class="cmd">cd ~/Desktop/rider-finder-main</span></pre>
+        <pre><span class="cmd">cd ~/Desktop/rider-finder</span></pre>
       </div>
     </div>
 
@@ -504,6 +503,27 @@
       <div class="label"><span class="step-badge">5</span> Press Enter and wait</div>
       <p class="step-desc">Press <strong>Enter</strong>. Rider Finder will start working through your video. You'll see progress in Terminal as it goes.</p>
       <div class="callout">📁 <strong>When it's finished:</strong> Your clips will be in a folder called <code class="inline-code">clips</code>, saved in the same place as your original video. Each clip is named with the jump's start time so they stay in order.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- GETTING UPDATES -->
+<section class="section" id="updates">
+  <div class="section-label">Keeping Up to Date</div>
+  <h2>Getting updates</h2>
+  <p class="section-sub">When a new version of Rider Finder is available, getting it takes just one command.</p>
+
+  <div class="install-steps">
+
+    <div class="install-block">
+      <div class="label"><span class="step-badge">1</span> Open Terminal and run this command</div>
+      <p class="step-desc">This downloads the latest version of Rider Finder straight to your computer, replacing only what's changed.</p>
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">Terminal</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cmd">cd ~/Desktop/rider-finder && git pull</span></pre>
+      </div>
+      <div class="callout">💡 <strong>That's it.</strong> If Terminal says <code class="inline-code">Already up to date.</code> then you already have the latest version and there's nothing to do.</div>
     </div>
 
   </div>
