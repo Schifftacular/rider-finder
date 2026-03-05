@@ -42,7 +42,7 @@ sudo apt install ffmpeg
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/mschiff05/rider-finder.git
+git clone https://github.com/Schifftacular/rider-finder.git
 cd rider-finder
 ```
 
