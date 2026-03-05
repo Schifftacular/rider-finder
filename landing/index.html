@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rider Finder — RNS Videomedia</title>
+  <meta name="description" content="Automatically extract horse jump clips from raw video footage using AI. Built for RNS Videomedia." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0f14;
+      --surface: #151821;
+      --surface2: #1c2030;
+      --border: #272d3f;
+      --accent: #4f8ef7;
+      --accent2: #6ee7b7;
+      --text: #e8eaf0;
+      --text-muted: #8891a8;
+      --code-bg: #0a0c11;
+      --radius: 10px;
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      font-size: 16px;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13,15,20,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-logo span.badge {
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 100px;
+      letter-spacing: .3px;
+    }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color .15s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* HERO */
+    .hero {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 96px 24px 72px;
+      text-align: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(79,142,247,.12);
+      border: 1px solid rgba(79,142,247,.25);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 60px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #e8eaf0 0%, #8891a8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all .15s;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #3d7ef5; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(79,142,247,.3); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { background: var(--surface); transform: translateY(-1px); }
+
+    /* HOW IT WORKS */
+    .section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 72px 24px;
+    }
+    .section + .section { border-top: 1px solid var(--border); }
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .section h2 {
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      color: var(--text-muted);
+      font-size: 16px;
+      max-width: 600px;
+      margin-bottom: 48px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+    }
+    .step-num {
+      width: 36px;
+      height: 36px;
+      background: rgba(79,142,247,.15);
+      border: 1px solid rgba(79,142,247,.3);
+      color: var(--accent);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .step-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .step-card p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+    /* INSTALL */
+    .install-steps { display: flex; flex-direction: column; gap: 24px; }
+    .install-block {}
+    .install-block .label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .install-block .label .step-badge {
+      width: 22px;
+      height: 22px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* CODE BLOCKS */
+    .code-wrap {
+      position: relative;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .code-lang {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .copy-btn {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px 8px;
+      border-radius: 4px;
+      transition: all .15s;
+    }
+    .copy-btn:hover { background: var(--border); color: var(--text); }
+    .copy-btn.copied { color: var(--accent2); }
+    pre {
+      padding: 20px 20px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    code { font-family: var(--font-mono); }
+    .comment { color: #4a5568; }
+    .cmd { color: #e8eaf0; }
+    .flag { color: #6ee7b7; }
+    .str { color: #fbbf24; }
+    .inline-code {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--accent2);
+    }
+
+    /* ARGS TABLE */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th {
+      background: var(--surface);
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surface); }
+    td:first-child code { color: var(--accent2); }
+    td:nth-child(2) code { color: var(--accent); }
+
+    /* TIPS */
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .tip-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .tip-card .tip-icon { font-size: 22px; margin-bottom: 12px; }
+    .tip-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+    .tip-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      text-align: center;
+    }
+    footer p { font-size: 13px; color: var(--text-muted); }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .hero { padding: 64px 20px 48px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      🐴 Rider Finder
+      <span class="badge">RNS Videomedia</span>
+    </a>
+    <div class="nav-links">
+      <a href="#how-it-works">How it works</a>
+      <a href="#install">Install</a>
+      <a href="#usage">Usage</a>
+      <a href="https://github.com/mschiff05/rider-finder" target="_blank">GitHub →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-eyebrow">🎬 AI-Powered Clip Extraction</div>
+  <h1>Find every jump.<br/>Automatically.</h1>
+  <p>Rider Finder scans raw footage, detects horses with YOLOv8, and cuts individual jump clips — so you can stop scrubbing and start editing.</p>
+  <div class="hero-cta">
+    <a href="#install" class="btn btn-primary">Get Started</a>
+    <a href="https://github.com/mschiff05/rider-finder" class="btn btn-ghost" target="_blank">View on GitHub</a>
+  </div>
+</header>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how-it-works">
+  <div class="section-label">Overview</div>
+  <h2>How it works</h2>
+  <p class="section-sub">Three steps from raw footage to organized clips — no manual work required.</p>
+  <div class="steps">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <h3>Detect</h3>
+      <p>YOLOv8 nano scans every few frames of your video, flagging every timestamp where a horse appears on screen.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <h3>Group</h3>
+      <p>Nearby detections are merged into a single "jump event." A configurable gap threshold separates distinct rides.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <h3>Extract</h3>
+      <p><code>ffmpeg</code> cuts each event into its own clip with buffer padding before and after — no re-encoding, lightning fast.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PREREQUISITES -->
+<section class="section">
+  <div class="section-label">Requirements</div>
+  <h2>Prerequisites</h2>
+  <p class="section-sub">You'll need Python 3.9+ and ffmpeg installed before getting started.</p>
+
+  <p style="margin-bottom: 16px; color: var(--text-muted); font-size: 15px;">Install <strong style="color:var(--text)">ffmpeg</strong> for your platform:</p>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+    <div>
+      <p style="font-size:13px; font-weight:600; color:var(--text-muted); margin-bottom:8px;">macOS (Homebrew)</p>
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="cmd">brew install ffmpeg</span></pre>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:13px; font-weight:600; color:var(--text-muted); margin-bottom:8px;">Ubuntu / Debian</p>
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><span class="cmd">sudo apt install ffmpeg</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTALL -->
+<section class="section" id="install">
+  <div class="section-label">Setup</div>
+  <h2>Installation</h2>
+  <p class="section-sub">Get up and running in under two minutes.</p>
+
+  <div class="install-steps">
+
+    <div class="install-block">
+      <div class="label"><span class="step-badge">1</span> Clone the repository</div>
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cmd">git clone https://github.com/mschiff05/rider-finder.git</span>
+<span class="cmd">cd rider-finder</span></pre>
+      </div>
+    </div>
+
+    <div class="install-block">
+      <div class="label"><span class="step-badge">2</span> Create a virtual environment</div>
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cmd">python3 -m venv .venv</span></pre>
+      </div>
+    </div>
+
+    <div class="install-block">
+      <div class="label"><span class="step-badge">3</span> Activate the virtual environment</div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div>
+          <p style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">macOS / Linux</p>
+          <div class="code-wrap">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><span class="cmd">source .venv/bin/activate</span></pre>
+          </div>
+        </div>
+        <div>
+          <p style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">Windows</p>
+          <div class="code-wrap">
+            <div class="code-header"><span class="code-lang">cmd</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+            <pre><span class="cmd">.venv\Scripts\activate</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="install-block">
+      <div class="label"><span class="step-badge">4</span> Install dependencies</div>
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cmd">pip install -r requirements.txt</span></pre>
+      </div>
+      <p style="margin-top:10px; font-size:13px; color:var(--text-muted);">
+        💡 On first run, Rider Finder will automatically download the YOLOv8 nano model weights (~6 MB). An internet connection is required the first time only.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- USAGE -->
+<section class="section" id="usage">
+  <div class="section-label">Usage</div>
+  <h2>Running Rider Finder</h2>
+  <p class="section-sub">Point it at any video file and let it run. Clips appear in a <code class="inline-code">clips/</code> folder automatically.</p>
+
+  <div class="install-steps">
+
+    <div class="install-block">
+      <div class="label">Basic — run on any video</div>
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cmd">python extract_jump_clips.py <span class="str">path/to/your/video.mp4</span></span></pre>
+      </div>
+    </div>
+
+    <div class="install-block">
+      <div class="label">Custom output directory</div>
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cmd">python extract_jump_clips.py <span class="str">video.mp4</span> <span class="flag">--output_dir</span> <span class="str">./my_clips</span></span></pre>
+      </div>
+    </div>
+
+    <div class="install-block">
+      <div class="label">Adjust buffer and gap thresholds</div>
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre><span class="cmd">python extract_jump_clips.py <span class="str">video.mp4</span> \
+  <span class="flag">--output_dir</span> <span class="str">./clips</span> \
+  <span class="flag">--buffer</span> 8 \
+  <span class="flag">--gap</span> 20</span></pre>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ARGS TABLE -->
+<section class="section">
+  <div class="section-label">Reference</div>
+  <h2>Arguments</h2>
+  <p class="section-sub" style="margin-bottom: 28px;">All available command-line options.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Argument</th>
+          <th>Default</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>video_file</code></td>
+          <td><em style="color:var(--text-muted)">required</em></td>
+          <td>Path to the input video file</td>
+        </tr>
+        <tr>
+          <td><code>--output_dir</code></td>
+          <td><code>&lt;video_dir&gt;/clips/</code></td>
+          <td>Directory to save extracted clips</td>
+        </tr>
+        <tr>
+          <td><code>--buffer</code></td>
+          <td><code>5.0</code></td>
+          <td>Seconds of padding to add before and after each detected jump event</td>
+        </tr>
+        <tr>
+          <td><code>--gap</code></td>
+          <td><code>15.0</code></td>
+          <td>Seconds of no horse detection needed to start a new separate event</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- TIPS -->
+<section class="section">
+  <div class="section-label">Tips & Troubleshooting</div>
+  <h2>Getting the best results</h2>
+  <p class="section-sub" style="margin-bottom: 32px;">Common adjustments for different footage types.</p>
+
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-icon">🔗</div>
+      <h4>Clips getting merged together?</h4>
+      <p>Increase <code class="inline-code">--gap</code> to separate events that are being combined into one clip.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🔍</div>
+      <h4>Missing some jumps?</h4>
+      <p>Decrease <code class="inline-code">--gap</code> for more sensitivity, or increase <code class="inline-code">--buffer</code> to capture more footage around each event.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">⚡</div>
+      <h4>Clips cut off too early?</h4>
+      <p>Increase <code class="inline-code">--buffer</code> (e.g. <code class="inline-code">--buffer 10</code>) to add more seconds before and after each jump.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">📹</div>
+      <h4>Supported formats</h4>
+      <p>Any format supported by ffmpeg: <code class="inline-code">.mp4</code>, <code class="inline-code">.mov</code>, <code class="inline-code">.avi</code>, <code class="inline-code">.mkv</code>, <code class="inline-code">.mts</code>, and more.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Built for <a href="#">RNS Videomedia</a> &nbsp;·&nbsp; <a href="https://github.com/mschiff05/rider-finder" target="_blank">GitHub</a></p>
+</footer>
+
+<script>
+  function copyCode(btn) {
+    const pre = btn.closest('.code-wrap').querySelector('pre');
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+</body>
+</html>

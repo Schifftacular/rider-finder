@@ -1,0 +1,37 @@
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# YOLO model weights (auto-downloaded on first run)
+*.pt
+
+# Video files
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.mts
+*.m2ts
+
+# Output clips directory
+clips/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
